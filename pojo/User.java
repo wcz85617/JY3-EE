@@ -1,17 +1,19 @@
 package com.neuedu.pojo;
 
 public class User {
-    private int id;
+    private String id;
     private String userName;
     private String psw;
+    public User() {
+    }
 
-    public User(int id, String userName, String psw) {
+    public User(String id, String userName, String psw) {
         this.id = id;
         this.userName = userName;
         this.psw = psw;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
@@ -23,7 +25,7 @@ public class User {
         return psw;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

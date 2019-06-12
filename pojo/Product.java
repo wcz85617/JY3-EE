@@ -1,7 +1,5 @@
 package com.neuedu.pojo;
 
-import java.sql.Date;
-
 public class Product {
 
     private String proId;
@@ -10,14 +8,14 @@ public class Product {
     private String proImage;
     private String proDes;
     private Integer proStock;
-    private Date proData;
+    private String proData;
     private String proFactory;
     private String proCategoryId;
-
     public Product() {
+
     }
 
-    public Product(String proId, String proName, double proPrice, String proImage, String proDes, Integer proStock, Date proData, String proFactory, String proCategoryId) {
+    public Product(String proId, String proName, double proPrice, String proImage, String proDes, Integer proStock, String proData, String proFactory, String proCategoryId) {
         this.proId = proId;
         this.proName = proName;
         this.proPrice = proPrice;
@@ -53,7 +51,7 @@ public class Product {
         return proStock;
     }
 
-    public Date getProData() {
+    public String getProData() {
         return proData;
     }
 
@@ -89,7 +87,7 @@ public class Product {
         this.proStock = proStock;
     }
 
-    public void setProData(Date proData) {
+    public void setProData(String proData) {
         this.proData = proData;
     }
 
