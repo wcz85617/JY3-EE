@@ -5,26 +5,25 @@ import com.neuedu.pojo.User;
 import com.neundu.datasource.DruidDataSource;
 import org.apache.commons.dbutils.DbUtils;
 import org.apache.commons.dbutils.QueryRunner;
-import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
+import org.apache.commons.dbutils.handlers.ScalarHandler;
 
 import java.net.UnknownServiceException;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-public class UserDameImpl implements UserDao {
+public class  UserDameImpl implements UserDao {
+
 
     private QueryRunner qr = null ;
     private DruidDataSource dds = DruidDataSource.getDataSource();
-    private Object BeanListHandler;
 
     public UserDameImpl() {
         qr = new QueryRunner();
 
     }
+
 
     @Override
     public List<User> getAllUser() {
@@ -46,13 +45,12 @@ public class UserDameImpl implements UserDao {
         return users;
     }
 
-    @Override
     public void  setUser(User user)
     {
         String sql ="UPDATE user SET userName = ?,psw = ? WHERE id = ?";
         Connection conn1 = dds.getConnection();
         try {
-            qr.update(conn1,sql,user.getUserName(),user.getPsw());
+            qr.update(conn1,sql,user.getUserName(),user.getPsw(),user.getId());
         } catch (SQLException e) {
             e.printStackTrace();
         }finally {
@@ -62,26 +60,51 @@ public class UserDameImpl implements UserDao {
                 e.printStackTrace();
             }
         }
-
-
-    }
+ }
 
     @Override
-    public User denglu(User user) throws SQLException {
-        String sql ="SELECT * FROM user WHERE username = ? AND password = ?";
-        Connection conn1 = dds.getConnection();
-        PreparedStatement preparedStatement = conn1.prepareStatement(sql);
-        preparedStatement.setString(1,user.getUserName());
-        preparedStatement.setString(2,user.getPsw());
-        ResultSet resultSet = preparedStatement.executeQuery();
-        if (resultSet.next())
-        {
-            return user;
+    public List<User> getUsers(int startIndex, int pageSize) {
+        Connection connection = dds.getConnection();
+        String sql = "SELECT * FROM user LIMIT ?,?";
+        try {
+            List<User> users = qr.query(connection, sql, new BeanListHandler<>(User.class), startIndex, pageSize);
+            return  users;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }finally {
+            try {
+                DbUtils.close(connection);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
-
-
         return null;
     }
 
+    @Override
+    public Integer getAllRecords() {
+        Connection connection = dds.getConnection();
+        String sql = "SELECT count(*) FROM user ";
 
+        try {
+            Long count = qr.query(connection, sql, new ScalarHandler<>());
+            return Integer.parseInt(count.toString());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }finally {
+            try {
+                DbUtils.close(connection);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+////    public static void main(String[] args) {
+////        UserDameImpl userDame = new UserDameImpl();
+////        List<User> allUser = userDame.getAllUser();
+////        System.out.println(allUser);
+//
+//    }
 }
